@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">PermisosRuntime</string>
-    <string name="btnName">Abrir Camara</string>
+    <string name="btnName">Abrir contactos</string>
     <string name="lblName">Estado del permiso: </string>
 </resources>

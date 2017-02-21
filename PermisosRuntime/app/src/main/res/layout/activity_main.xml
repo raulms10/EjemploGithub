@@ -27,7 +27,7 @@
             android:id="@+id/lbnPermiso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btnName"
+            android:text="@string/lblName"
             android:layout_gravity="center_horizontal"/>
 
     </LinearLayout>

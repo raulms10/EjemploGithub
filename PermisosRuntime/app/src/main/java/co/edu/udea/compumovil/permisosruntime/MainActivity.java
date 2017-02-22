@@ -1,6 +1,5 @@
 package co.edu.udea.compumovil.permisosruntime;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -8,48 +7,48 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView lblPermiso;
-    private TextView lblContacto;
-    private final int MY_PERMISSIONS = 100;
-    private final int OPEN_CONTACT = 200;
+    private TextView lblPermiso; //Referenciar el Texview del estado del permiso
+    private TextView lblContacto; //Referenciar el Texview del contacto seleccionado
+    private final int MY_PERMISSIONS = 100; /*Código que utilizaremos para solicitar los persimos,
+                                              puede ser cualquier número*/
+    private final int OPEN_CONTACT = 200; /*Código que utilizaremos para abrir la lista de conctatos
+                                            puede ser cualquier número*/
     private final String str_permitido = "PERMITIDO";
     private final String str_denegado = "DENEGADO";
-    private String estado;
+    private String estado; //Alamacenará "Estado del permiso:"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        estado = getResources().getString(R.string.lblName); //Obtiene el String del Label debajo del boton
-        lblPermiso = (TextView) findViewById(R.id.lbnPermiso);
-        lblContacto = (TextView) findViewById(R.id.lblContacto);
 
-        if(verificarPermisos()) //verificar los permisos
+        estado = getResources().getString(R.string.lblName); /*Obtiene el String los recursos "Estado del permiso: "
+                                                                para mostrarlo debajo del botón Abrir contactos*/
+        lblPermiso = (TextView) findViewById(R.id.lbnPermiso); //Inicializamos el componente del permiso
+        lblContacto = (TextView) findViewById(R.id.lblContacto); //Inicializamos el componente del contacto
+
+        if(verificarPermiso()) //verificamos los permisos y actualizamos el Textview del estado
             lblPermiso.setText(estado+" "+str_permitido);
         else
             lblPermiso.setText(estado+" "+str_denegado);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
+    @TargetApi(Build.VERSION_CODES.M)
     public void on_Click(View view){
 
-        if(verificarPermisos()) { //verificar los permisos
+        if(verificarPermiso()) { //verificar los permisos
             lblPermiso.setText(estado+" "+str_permitido);
             Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI); //Creamos un Intent para abrir los contactos
             startActivityForResult(intent, OPEN_CONTACT); //Lanzamos el Intent y se espera a que se seleccione uno
@@ -57,19 +56,21 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(new String[]{READ_CONTACTS}, MY_PERMISSIONS); //Solicitamos los permisos para abrir los contactos
     }
 
-    public boolean verificarPermisos(){
+    public boolean verificarPermiso(){
+        /* Comprobar que la versión del dispositivo si sea la que admite los permisos en tiempo de
+        *  de ejecución, es decir, de la versión de Android 6.0 o superior porque para versiones
+        *  anteriores basta con colocar el permiso el el archivo manifiesto
+        * */
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             return true;
+
+        /* Aqui es donde comprobamos que los permisos ya hayan sido aceptdos por el usuario */
         if(checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)
             return true;
-        /*if(shouldShowRequestPermissionRationale(READ_CONTACTS)){//Solicitar permisos cuando los permisos son negados por el usuario en ajustes.
-            //Toast.makeText(this, "Los permisos son necesarios para poder usar la aplicación", Toast.LENGTH_SHORT).show();
-            //requestPermissions(new String[]{READ_CONTACTS}, MY_PERMISSIONS); //Solicitar permisos
-        }else{//Solicitar permisos la primera vez que se instalaló l aplicación
-            //requestPermissions(new String[]{READ_CONTACTS}, MY_PERMISSIONS); //Solicitar permisos
-        }*/
-        return false;
+
+        return false; //Los permisos no han sido aceptados por el usuario
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

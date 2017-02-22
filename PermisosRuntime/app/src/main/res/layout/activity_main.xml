@@ -10,21 +10,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="co.edu.udea.compumovil.permisosruntime.MainActivity"
     android:weightSum="1">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center_vertical">
         <Button
-            android:id="@+id/btnCamara"
+            android:id="@+id/btnContactos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btnName"
             android:onClick="on_Click"
             android:layout_gravity="center_horizontal"/>
         <TextView
-            android:id="@+id/lbnPermiso"
+            android:id="@+id/lblPermiso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/lblName"
@@ -35,7 +34,5 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="center_horizontal"/>
-
     </LinearLayout>
-
 </LinearLayout>

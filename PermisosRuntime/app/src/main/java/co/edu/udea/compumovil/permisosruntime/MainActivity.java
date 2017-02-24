@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         estado = getResources().getString(R.string.lblName); /*Obtiene el String los recursos "Estado del permiso: "
                                                                 para mostrarlo debajo del botón Abrir contactos*/
-        lblPermiso = (TextView) findViewById(R.id.lbnPermiso); //Inicializamos el componente del permiso
+        lblPermiso = (TextView) findViewById(R.id.lblPermiso); //Inicializamos el componente del permiso
         lblContacto = (TextView) findViewById(R.id.lblContacto); //Inicializamos el componente del contacto
 
         if(verificarPermiso()) //verificamos los permisos y actualizamos el Textview del estado
@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
     public void on_Click(View view){
 
         if(verificarPermiso()) { //verificar los permisos
-            lblPermiso.setText(estado+" "+str_permitido);
+            lblPermiso.setText(estado+" "+str_permitido); //Actualizamos el Textview del estado del permiso
             Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI); //Creamos un Intent para abrir los contactos
-            startActivityForResult(intent, OPEN_CONTACT); //Lanzamos el Intent y se espera a que se seleccione uno
+            startActivityForResult(intent, OPEN_CONTACT); //Lanzamos el Intent y se espera a que se seleccione un contacto
         }else
             requestPermissions(new String[]{READ_CONTACTS}, MY_PERMISSIONS); //Solicitamos los permisos para abrir los contactos
     }
@@ -74,17 +74,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK){
-            switch (requestCode){
-                case OPEN_CONTACT:
-                    Uri contactUri = data.getData(); //Obtenemos la información del contacto seleccionado
-                    Cursor cursor = getContentResolver().query(contactUri, null, null, null, null);
-                    String nombre = "\n"+getResources().getString(R.string.lblContacto)+"\n";
-                    if (cursor.moveToFirst()){
-                        nombre = nombre + cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+        if(resultCode == Activity.RESULT_OK){ //Comprobar que la operación se hay realizado con éxito
+            switch (requestCode){ //Código de respuesta
+                case OPEN_CONTACT: //Debe ser igual al que enviamos en el método: startActivityForResult(intent, OPEN_CONTACT);
+                    Uri contactUri = data.getData(); //Obtenemos el URI del contacto
+                    Cursor cursor = getContentResolver().query(contactUri, null, null, null, null); /*Con el URI consultamos la
+                                                                                            información del contacto seleccionado*/
+                    String nombre = "\n"+getResources().getString(R.string.lblContacto)+"\n"; //Obetenemos el String "Contacto seleccionado: "
+                    if (cursor.moveToFirst()){ //Verificamos que que contacto existe, la consulta no está vacía
+                        nombre = nombre + cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));/*Obtenemos el nombre
+                                                                                                  del contacto contenido en la cunsulta(cursor)*/
                     }
-                    lblContacto.setText(nombre);
-                    break;
+                    lblContacto.setText(nombre); //Mostramos el nombre del contacto
+                break;
             }
         }
 

@@ -106,5 +106,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-git config 
 }

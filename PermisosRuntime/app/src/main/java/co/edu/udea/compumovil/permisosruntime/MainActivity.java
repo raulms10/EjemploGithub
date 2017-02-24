@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK){ //Comprobar que la operación se hay realizado con éxito
             switch (requestCode){ //Código de respuesta
-                case OPEN_CONTACT: //Debe ser igual al que enviamos en el método: startActivityForResult(intent, OPEN_CONTACT);
+                case OPEN_CONTACT: //Significa que ha regresado de contactos que se abrió en startActivityForResult(intent, OPEN_CONTACT);
                     Uri contactUri = data.getData(); //Obtenemos el URI del contacto
                     Cursor cursor = getContentResolver().query(contactUri, null, null, null, null); /*Con el URI consultamos la
                                                                                             información del contacto seleccionado*/
@@ -96,16 +96,15 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if(requestCode == MY_PERMISSIONS){
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                lblPermiso.setText(estado+" "+str_permitido);
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(intent, OPEN_CONTACT);
+        if(requestCode == MY_PERMISSIONS){ //Este es el código que hemos ingresado en el método requestPermisions
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){ /*Verificar que si se haya aceptado el permiso*/
+                lblPermiso.setText(estado+" "+str_permitido); //Modificamos el estado del permiso a PERMITIDO
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI); //Creamos el Intent para abrir los contactos
+                startActivityForResult(intent, OPEN_CONTACT); //Abrimos los contactos
+            }else{
+                lblPermiso.setText(estado+" "+str_denegado); //Si los permisos fueron rechazos actualizamos el textview del estado del permiso
             }
-        }else{
-            lblPermiso.setText(estado+" "+str_denegado);
         }
-
     }
 
 }
